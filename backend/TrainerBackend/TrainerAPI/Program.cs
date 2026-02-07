@@ -1,15 +1,16 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer(); // <--- Necesar pentru a scana endpoint-urile
+builder.Services.AddSwaggerGen();           // <--- Generatorul de Swagger
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();                       // <--- Activeaza generarea JSON-ului
+    app.UseSwaggerUI();                     // <--- Activeaza interfata grafica la /swagger
 }
 
 app.UseHttpsRedirection();
@@ -31,7 +32,8 @@ app.MapGet("/weatherforecast", () =>
             .ToArray();
         return forecast;
     })
-    .WithName("GetWeatherForecast");
+    .WithName("GetWeatherForecast")
+    .WithOpenApi(); // <--- Asta ajuta Swagger sa inteleaga endpoint-ul
 
 app.Run();
 
